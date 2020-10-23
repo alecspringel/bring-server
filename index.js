@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 // Endpoints
 const donations = require("./api/donations");
+const responses = require("./api/responses");
 // MongoDB Drivers/URI
 const mongoose = require("mongoose");
 const db = require("./config/keys.js").mongoURI;
@@ -24,6 +25,7 @@ app.use(bodyParser.json());
 
 // Endpoints
 app.use("/api/donations", donations);
+app.use("/api/responses", responses);
 
 app.listen(PORT, () => {
   console.log(`Bring server running at http://localhost:${PORT}`);
