@@ -15,14 +15,14 @@ router.post("/create", (req, res) => {
     return res.status(400).send(errors);
   }
 
-  singleUpload(req, res, (err) => {
-    if (err) {
-      return res.status(422).send({
-        errors: [{ title: "Image Upload Error", detail: err.message }],
-      });
-    }
-    console.log(req.file.location);
-  });
+  // singleUpload(req, res, (err) => {
+  //   if (err) {
+  //     return res.status(422).send({
+  //       errors: [{ title: "Image Upload Error", detail: err.message }],
+  //     });
+  //   }
+  //   console.log(req.file.location);
+  // });
 
   const newDonation = {
     first: req.body.first,
