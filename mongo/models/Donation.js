@@ -19,7 +19,6 @@ const DonationSchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
   },
   createdDate: {
     type: Date,
@@ -28,12 +27,10 @@ const DonationSchema = new Schema({
   },
   responseStatus: {
     type: Boolean,
-    default: false,
-    required: true,
+    default: null,
   },
   responseMessage: {
     type: String,
-    required: true,
     default: null,
   },
   imageUrl: {
