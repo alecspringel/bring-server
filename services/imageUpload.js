@@ -1,7 +1,8 @@
 const aws = require("aws-sdk");
 const multer = require("multer");
-const multerS3 = require("multer-s3");
+const multerS3 = require("multer-s3-transform");
 const keys = require("../config/keys");
+const sharp = require("sharp")
 const { validateNewDonation } = require("../validation/donations");
 
 aws.config.update({
@@ -44,6 +45,19 @@ const upload = multer({
     acl: "public-read",
     s3,
     bucket: "bring-donations",
+    shouldTransform: function (req, file, cb) {
+      cb(null, true)
+    },
+    transforms: [{
+      id: 'original',
+      key: function (req, file, cb) {
+        cb(null, makeid(10));
+      },
+      transform: function (req, file, cb) {
+        //Perform desired transformations
+        cb(null, sharp().resize({width: 900, fit: sharp.fit.contain}).jpeg())
+      }
+    }],
     contentType: multerS3.AUTO_CONTENT_TYPE,
     metadata: function (req, file, cb) {
       cb(null, { fieldName: "TESTING_METADATA" });
