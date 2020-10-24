@@ -4,35 +4,32 @@ const Donation = require("../mongo/models/Donation");
 const { validateNewDonation } = require("../validation/donations");
 // Image upload
 const upload = require("../services/imageUpload");
-const singleUpload = upload.single("image");
+const MAX_IMAGES = 5;
+const imageUpload = upload.array("image", MAX_IMAGES);
 
 // @route POST api/donations/create
 // @desc Create a donation with contact info
 // @access Public
 router.post("/create", (req, res) => {
-  const { isValid, errors } = validateNewDonation(req.body);
-  if (!isValid) {
-    return res.status(400).send(errors);
-  }
-
-  // singleUpload(req, res, (err) => {
-  //   if (err) {
-  //     return res.status(422).send({
-  //       errors: [{ title: "Image Upload Error", detail: err.message }],
-  //     });
-  //   }
-  //   console.log(req.file.location);
-  // });
-
-  const newDonation = {
-    first: req.body.first,
-    last: req.body.last,
-    email: req.body.email,
-    description: req.body.description,
-    imageUrl: [],
-  };
-  Donation.create(newDonation);
-  res.status(200).send(newDonation);
+  //Validation is handled in services/imageUpload.js within multer
+  imageUpload(req, res, (err) => {
+    if (err) {
+      return res.status(400).send(req.body.errors);
+    } else {
+      // req.files contains all image info in array [images]
+      // console.log(req.files);
+      var imageUrls = req.files.map((file) => file.location);
+      const newDonation = {
+        first: req.body.first,
+        last: req.body.last,
+        email: req.body.email,
+        description: req.body.description,
+        imageUrls,
+      };
+      Donation.create(newDonation);
+      res.status(200).send(newDonation);
+    }
+  });
 });
 
 // @route POST api/donations/modify"

@@ -33,7 +33,7 @@ const DonationSchema = new Schema({
     type: String,
     default: null,
   },
-  imageUrl: {
+  imageUrls: {
     type: [String],
     required: true,
   },
