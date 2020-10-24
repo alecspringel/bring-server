@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+var cors = require('cors');
 // Endpoints
 const donations = require("./api/donations");
 const responses = require("./api/responses");
@@ -15,6 +16,7 @@ mongoose
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.log(err));
 
+app.use(cors());
 // Bodyparser middleware
 app.use(
   bodyParser.urlencoded({
