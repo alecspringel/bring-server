@@ -22,8 +22,12 @@ router.post("/create", (req, res) => {
       const newDonation = {
         first: req.body.first,
         last: req.body.last,
-        email: req.body.email,
+        itemName: req.body.itemName,
         description: req.body.description,
+        email: req.body.email,
+        phone: req.body.phone,
+        preferPhone: req.body.preferPhone,
+        preferEmail: req.body.preferEmail,
         imageUrls,
       };
       Donation.create(newDonation);

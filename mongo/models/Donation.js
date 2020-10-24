@@ -13,12 +13,28 @@ const DonationSchema = new Schema({
     default: null,
     require: true,
   },
-  email: {
+  itemName: {
     type: String,
     required: true,
   },
   description: {
     type: String,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  preferPhone: {
+    type: Boolean,
+    required: true,
+  },
+  preferEmail: {
+    type: Boolean,
+    required: true,
   },
   createdDate: {
     type: Date,

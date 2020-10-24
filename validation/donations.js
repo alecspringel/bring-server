@@ -8,6 +8,10 @@ function validateNewDonation(data) {
   data.first = isEmpty(data.first) ? "" : data.first;
   data.last = isEmpty(data.last) ? "" : data.last;
   data.email = isEmpty(data.email) ? "" : data.email;
+  data.phone = isEmpty(data.phone) ? "" : data.phone;
+  data.itemName = isEmpty(data.itemName) ? "" : data.itemName;
+  data.preferPhone = isEmpty(data.preferPhone) ? "" : data.preferPhone;
+  data.preferEmail = isEmpty(data.preferEmail) ? "" : data.preferEmail;
 
   if (Validator.isEmpty(data.email)) {
     errors.email = "Email field is required";
@@ -15,11 +19,23 @@ function validateNewDonation(data) {
     errors.email = "Email is invalid";
   }
 
+  if (Validator.isEmpty(data.phone)) {
+    errors.phone = "Phone field is required";
+  }
   if (Validator.isEmpty(data.first)) {
     errors.first = "First name is required";
   }
   if (Validator.isEmpty(data.last)) {
     errors.last = "Last name is required";
+  }
+  if (Validator.isEmpty(data.itemName)) {
+    errors.itemName = "Name of item(s) is required";
+  }
+  if (Validator.isEmpty(data.preferPhone)  || !Validator.isBoolean(data.preferPhone)) {
+    errors.preferPhone = "Preferred contact method is malformed";
+  }
+  if (Validator.isEmpty(data.preferEmail)  || !Validator.isBoolean(data.preferEmail)) {
+    errors.preferEmail = "Preferred contact method is malformed";
   }
 
   return {
