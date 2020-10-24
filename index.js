@@ -7,7 +7,7 @@ const responses = require("./api/responses");
 // MongoDB Drivers/URI
 const mongoose = require("mongoose");
 const db = require("./config/keys.js").mongoURI;
-const PORT = 3000;
+const PORT = 5000;
 
 // Connect to MongoDB
 mongoose
