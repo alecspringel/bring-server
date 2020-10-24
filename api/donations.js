@@ -17,8 +17,8 @@ router.post("/create", (req, res) => {
       return res.status(400).send(req.body.errors);
     } else {
       // req.files contains all image info in array [images]
-      // console.log(req.files);
-      var imageUrls = req.files.map((file) => file.location);
+      console.log(req.files);
+      var imageUrls = req.files.map((file) => file.transforms[0].location);
       const newDonation = {
         first: req.body.first,
         last: req.body.last,
