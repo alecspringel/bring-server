@@ -122,7 +122,7 @@ router.get("/all", authUser, (req, res) => {
 // @desc Get all donations that haven't been responded to by a staff member
 // @access Private
 router.get("/unresolved", authUser, (req, res) => {
-  Donation.find({ responseStatus: false }).then((docs) => {
+  Donation.find({ responseStatus: false }).sort({createdDate: 1}).then((docs) => {
     res.status(200).send(docs);
   });
 });
