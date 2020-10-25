@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Response = require("../mongo/models/responses");
+const sendSMS = require("../services/twilioSMS");
 
 // @route POST api/responses/create
 // @desc Create a new preset response message
@@ -31,6 +32,14 @@ router.get("/all", (req, res) => {
   Response.find().then((docs) => {
     res.status(200).send(docs);
   });
+});
+
+// @route POST api/responses/sms
+// @desc Test sms functionality
+// @access Private
+router.post("/sms", (req, res) => {
+  sendSMS("+15033696449", "HOLY CRAP IT WORKS");
+  res.status(200).send();
 });
 
 module.exports = router;
