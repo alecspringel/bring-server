@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Donation = require("../mongo/models/Donation");
+const { authUser } = require("../middleware/authUser")
 const { validateNewDonation } = require("../validation/donations");
 const sendSMS = require("../services/twilioSMS");
 const sendSlackNotification = require("../services/slackNotifications");
@@ -42,7 +43,7 @@ router.post("/create", (req, res) => {
 // @route POST api/donations/respond"
 // @desc Used when staff members respond to posted donations
 // @access Private
-router.post("/respond", (req, res) => {
+router.post("/respond", authUser, (req, res) => {
   const { donationId, responseMessage, responseType } = req.body;
 
   console.log(donationId)
@@ -77,7 +78,7 @@ router.post("/respond", (req, res) => {
 //                      "modified": { "responseMessage": "Awesome new resp msg", "responseStatus": true}
 //                      }
 // @access Private
-router.post("/modify", (req, res) => {
+router.post("/modify", authUser, (req, res) => {
   Donation.updateOne({ _id: req.body.id }, req.body.modified).then((docs) => {
     console.log("Modified:", req.body.id, "with", req.body.modified);
   });
@@ -88,7 +89,7 @@ router.post("/modify", (req, res) => {
 // @desc Delete donation already stored in database
 // ex. of posted data: {"id": "5f925ffa5c"}
 // @access Private
-router.post("/delete", (req, res) => {
+router.post("/delete", authUser, (req, res) => {
   Donation.findByIdAndDelete(req.body.id).then((docs) => {
     console.log("Deleted:", req.body.id);
   });
@@ -98,7 +99,7 @@ router.post("/delete", (req, res) => {
 // @route GET api/donations/all
 // @desc Get all donations
 // @access Private
-router.get("/all", (req, res) => {
+router.get("/all", authUser, (req, res) => {
   Donation.find().then((docs) => {
     res.status(200).send(docs);
   });
@@ -107,7 +108,7 @@ router.get("/all", (req, res) => {
 // @route GET api/donations/unresolved
 // @desc Get all donations that haven't been responded to by a staff member
 // @access Private
-router.get("/unresolved", (req, res) => {
+router.get("/unresolved", authUser, (req, res) => {
   Donation.find({ responseStatus: false }).then((docs) => {
     res.status(200).send(docs);
   });
@@ -116,7 +117,7 @@ router.get("/unresolved", (req, res) => {
 // @route GET api/donations/resolved
 // @desc Get all donations that have been responded to by a staff member
 // @access Private
-router.get("/resolved", (req, res) => {
+router.get("/resolved", authUser, (req, res) => {
   Donation.find({ responseStatus: true }).then((docs) => {
     res.status(200).send(docs);
   });
