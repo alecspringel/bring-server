@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Donation = require("../mongo/models/Donation");
 const { validateNewDonation } = require("../validation/donations");
+const sendSMS = require("../services/twilioSMS");
 // Image upload
 const upload = require("../services/imageUpload");
 const MAX_IMAGES = 5;
@@ -34,6 +35,23 @@ router.post("/create", (req, res) => {
       res.status(200).send(newDonation);
     }
   });
+});
+
+// @route POST api/donations/respond"
+// @desc Used when staff members respond to posted donations
+// @access Private
+router.post("/respond", (req, res) => {
+  var greeting = `Hello ${req.body.first} ${req.body.last}, this is BRING Recyling responding to your question about donating ${req.body.itemName}. `
+  var responseMessage = req.body.message
+  // IMPLEMENT EMAIL MESSAGES
+  if (req.body.preferEmail) {
+    console.log("Not implemented yet");
+  }
+  else if (req.body.preferPhone) {
+    sendSMS(req.body.phone, greeting.concat(responseMessage));
+    
+  }
+  res.status(200).send();
 });
 
 // @route POST api/donations/modify"
