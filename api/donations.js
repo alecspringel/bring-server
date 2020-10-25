@@ -3,6 +3,7 @@ const router = express.Router();
 const Donation = require("../mongo/models/Donation");
 const { validateNewDonation } = require("../validation/donations");
 const sendSMS = require("../services/twilioSMS");
+const sendSlackNotification = require("../services/slackNotifications");
 // Image upload
 const upload = require("../services/imageUpload");
 const MAX_IMAGES = 5;
@@ -32,6 +33,7 @@ router.post("/create", (req, res) => {
         imageUrls,
       };
       Donation.create(newDonation);
+      sendSlackNotification(`One new donation question has been received about a ${req.body.itemName}`);
       res.status(200).send(newDonation);
     }
   });
