@@ -3,11 +3,14 @@ const router = express.Router();
 const Donation = require("../mongo/models/Donation");
 const { validateNewDonation } = require("../validation/donations");
 const sendSMS = require("../services/twilioSMS");
+const {sendEmail, sendStaffEmailNotification} = require("../services/nodeMailer");
 const sendSlackNotification = require("../services/slackNotifications");
 // Image upload
 const upload = require("../services/imageUpload");
 const MAX_IMAGES = 5;
 const imageUpload = upload.array("image", MAX_IMAGES);
+//URL of admin page
+const adminURL = "http://localhost:3000/admin"
 
 // @route POST api/donations/create
 // @desc Create a donation with contact info
@@ -33,7 +36,17 @@ router.post("/create", (req, res) => {
         imageUrls,
       };
       Donation.create(newDonation);
-      sendSlackNotification(`One new donation question has been received about a ${req.body.itemName}`);
+      Donation.countDocuments({ responseStatus: false }).then((pending) => {
+        console.log("New donation question created", pending, "pending donation questions");
+        var message = "";
+        if (pending == 1) {
+          message = `1 new donation question about a ${req.body.itemName} was posted. Respond to it at ${adminURL}.`;
+        } else if (pending > 1){
+          message = `1 new donation question about a ${req.body.itemName} was posted. There are currently ${pending} questions waiting for review. Respond to all of them at ${adminURL}`;
+        }
+        sendStaffEmailNotification(pending, req.body.itemName, adminURL, message);
+        sendSlackNotification(message);
+      });
       res.status(200).send(newDonation);
     }
   });
@@ -44,8 +57,6 @@ router.post("/create", (req, res) => {
 // @access Private
 router.post("/respond", (req, res) => {
   const { donationId, responseMessage, responseType } = req.body;
-
-  console.log(donationId)
   Donation.findOneAndUpdate(
     { _id: donationId },
     {
@@ -61,8 +72,10 @@ router.post("/respond", (req, res) => {
       var greeting = `Hello ${donation.first} ${donation.last}, this is BRING Recyling responding to your question about donating ${donation.itemName}. `;
       // IMPLEMENT EMAIL MESSAGES
       if (donation.preferEmail) {
-        console.log("Not implemented yet");
-      } else if (donation.preferPhone) {
+        const emailSubject = "BRING Recycling donation question response"
+        sendEmail(emailSubject, greeting.concat(responseMessage),null, donation.email);
+      } 
+      if (donation.preferPhone) {
         sendSMS(donation.phone, greeting.concat(responseMessage));
       }
       res.status(200).send("Message sent");

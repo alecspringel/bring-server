@@ -6,7 +6,7 @@ module.exports = function sendSlackNotification(message) {
         text: message,
     })
     .then(function (response) {
-        console.log(response);
+        //console.log(response);
     })
     .catch(function (error) {
         console.log(error);

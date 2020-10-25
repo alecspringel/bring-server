@@ -44,27 +44,4 @@ function validateNewDonation(data) {
   };
 }
 
-function validateModifyDonation(data) {
-  //WIP
-  let errors = {};
-  const modified = data.modified;
-  if (Validator.isEmpty(data.email)) {
-    errors.email = "Email field is required";
-  } else if (!Validator.isEmail(data.email)) {
-    errors.email = "Email is invalid";
-  }
-
-  if (Validator.isEmpty(data.first)) {
-    errors.first = "First name is required";
-  }
-  if (Validator.isEmpty(data.last)) {
-    errors.last = "Last name is required";
-  }
-
-  return {
-    errors,
-    isValid: isEmpty(errors),
-  };
-}
-
 module.exports = { validateNewDonation };
