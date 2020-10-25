@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const { authUser } = require("../middleware/authUser")
 const Response = require("../mongo/models/responses");
 
 // @route POST api/responses/create
 // @desc Create a new preset response message
 // @access Private
-router.post("/create", (req, res) => {
+router.post("/create", authUser, (req, res) => {
   const newResponse = {
     message: req.body.message
   };
@@ -17,7 +18,7 @@ router.post("/create", (req, res) => {
 // @desc Delete response already stored in database
 // ex. of posted data: {"id": "5f925ffa5c"}
 // @access Private
-router.post("/delete", (req, res) => {
+router.post("/delete", authUser, (req, res) => {
   Donation.findByIdAndDelete(req.body.id).then((docs) => {
     console.log("Deleted:", req.body.id);
   });
@@ -27,7 +28,7 @@ router.post("/delete", (req, res) => {
 // @route GET api/responses/all
 // @desc Get all responses
 // @access Private
-router.get("/all", (req, res) => {
+router.get("/all", authUser, (req, res) => {
   Response.find().then((docs) => {
     res.status(200).send(docs);
   });

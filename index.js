@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 var cors = require('cors');
 // Endpoints
+const user = require("./api/user");
 const donations = require("./api/donations");
 const responses = require("./api/responses");
 // MongoDB Drivers/URI
@@ -26,6 +27,7 @@ app.use(
 app.use(bodyParser.json());
 
 // Endpoints
+app.use("/api/user", user);
 app.use("/api/donations", donations);
 app.use("/api/responses", responses);
 
