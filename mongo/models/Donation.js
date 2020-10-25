@@ -43,7 +43,12 @@ const DonationSchema = new Schema({
   },
   responseStatus: {
     type: Boolean,
-    default: null,
+    default: false,
+  },
+  responseType: {
+    type: String,
+    enum : ['YES', 'MAYBE', 'NO', null],
+    default: null
   },
   responseMessage: {
     type: String,

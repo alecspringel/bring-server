@@ -41,17 +41,31 @@ router.post("/create", (req, res) => {
 // @desc Used when staff members respond to posted donations
 // @access Private
 router.post("/respond", (req, res) => {
-  var greeting = `Hello ${req.body.first} ${req.body.last}, this is BRING Recyling responding to your question about donating ${req.body.itemName}. `
-  var responseMessage = req.body.message
-  // IMPLEMENT EMAIL MESSAGES
-  if (req.body.preferEmail) {
-    console.log("Not implemented yet");
-  }
-  else if (req.body.preferPhone) {
-    sendSMS(req.body.phone, greeting.concat(responseMessage));
-    
-  }
-  res.status(200).send();
+  const { donationId, responseMessage, responseType } = req.body;
+
+  console.log(donationId)
+  Donation.findOneAndUpdate(
+    { _id: donationId },
+    {
+      responseStatus: true,
+      responseType,
+      responseMessage,
+    },
+    (err, donation) => {
+      if(!donation) {
+        //This should never occur. This would mean the donation no longer exists
+        return res.status(500).send("Donation does not exist");
+      }
+      var greeting = `Hello ${donation.first} ${donation.last}, this is BRING Recyling responding to your question about donating ${donation.itemName}. `;
+      // IMPLEMENT EMAIL MESSAGES
+      if (donation.preferEmail) {
+        console.log("Not implemented yet");
+      } else if (donation.preferPhone) {
+        sendSMS(donation.phone, greeting.concat(responseMessage));
+      }
+      res.status(200).send("Message sent");
+    }
+  );
 });
 
 // @route POST api/donations/modify"
@@ -92,7 +106,7 @@ router.get("/all", (req, res) => {
 // @desc Get all donations that haven't been responded to by a staff member
 // @access Private
 router.get("/unresolved", (req, res) => {
-  Donation.find({ responseStatus: null }).then((docs) => {
+  Donation.find({ responseStatus: false }).then((docs) => {
     res.status(200).send(docs);
   });
 });
@@ -101,7 +115,7 @@ router.get("/unresolved", (req, res) => {
 // @desc Get all donations that have been responded to by a staff member
 // @access Private
 router.get("/resolved", (req, res) => {
-  Donation.find({ responseStatus: { $in: [false, true] } }).then((docs) => {
+  Donation.find({ responseStatus: true }).then((docs) => {
     res.status(200).send(docs);
   });
 });
