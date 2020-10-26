@@ -1,4 +1,8 @@
 # Bring Recycling Server
+## Overview
+This Node server is responsible for responding to API requests made by the react front end, processing and storing uploaded images in AWS S3, and storing and retrieving donation data from a MongoDB database.
+
+Additionally, the server also uses Slack's API to communicate with staff and Twilio's API to send SMS messages to potential donators.
 
 ## Setup
 
@@ -24,8 +28,3 @@ This application stores any user submitted images in an AWS S3 bucket. To setup 
 In order for staff to respond to questions about donating items, the server stores contact information of potential donators in a MongoDB database along with item information.
 
 To setup mongodb do: FIX ME
-
-## API Information
-
-Information on the API endpoints made available by this server goes here. FIX ME
-
