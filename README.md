@@ -40,7 +40,6 @@ The server relies on AWS S3 to upload and host images. To set up AWS S3, got to 
 In order to set up MongoDB, input your URI connection string to /config/keys.js
 
 ## Developing
-bring-client is built with React.  
 
 #### Install
 ```
@@ -49,10 +48,6 @@ npm install
 #### Run
 ```
 npm run start
-```
-#### Build
-```
-npm run build
 ```
 
 ## Contributors
