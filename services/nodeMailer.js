@@ -27,7 +27,7 @@ function sendEmail(subject, text, html=null, receiverAddr=keys.EMAIL_USER) {
 
 function sendStaffEmailNotification(pending, itemName, adminUrl, message) {
     const emailSubject = `${pending} pending donation questions`;
-    var body = `<p>A new donation question about a ${itemName} was posted.<br>There are currently <b>${pending}</b> questions waiting for review.`;
+    var body = `<p>A new donation question about ${itemName} was posted.<br>There are currently <b>${pending}</b> questions waiting for review.`;
     const button = `<p><a href="http://localhost:3000/admin" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #FFFFFF; text-decoration: none; border-radius: 3px; background-color: #de472b; border-top: 12px solid #de472b; border-bottom: 12px solid #de472b; border-right: 18px solid #de472b; border-left: 18px solid #de472b; display: inline-block;">Respond now &rarr;</a></p>`;
     body = body.concat(button);
     sendEmail(emailSubject, message, html=body);

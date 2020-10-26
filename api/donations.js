@@ -45,9 +45,9 @@ router.post("/create", (req, res) => {
         console.log("New donation question created", pending, "pending donation questions");
         var message = "";
         if (pending == 1) {
-          message = `1 new donation question about a ${req.body.itemName} was posted. Respond to it at ${adminURL}.`;
+          message = `1 new donation question about ${req.body.itemName} was posted. Respond to it at ${adminURL}.`;
         } else if (pending > 1){
-          message = `1 new donation question about a ${req.body.itemName} was posted. There are currently ${pending} questions waiting for review. Respond to all of them at ${adminURL}`;
+          message = `1 new donation question about ${req.body.itemName} was posted. There are currently ${pending} questions waiting for review. Respond to all of them at ${adminURL}`;
         }
         sendStaffEmailNotification(pending, req.body.itemName, adminURL, message);
         sendSlackNotification(message);
