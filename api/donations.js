@@ -22,12 +22,15 @@ router.post("/create", (req, res) => {
     if (err) {
       return res.status(400).send(req.body.errors);
     } else {
+      if (req.body.description === "") {
+        req.body.description = "No description";
+      }
       // req.files contains all image info in array [images]
       console.log(req.files);
       var imageUrls = req.files.map((file) => file.transforms[0].location);
       const newDonation = {
-        first: req.body.first,
-        last: req.body.last,
+        first: req.body.first.charAt(0).toUpperCase() + req.body.first.slice(1),
+        last: req.body.last.charAt(0).toUpperCase() + req.body.last.slice(1),
         itemName: req.body.itemName,
         description: req.body.description,
         email: req.body.email,
@@ -122,7 +125,19 @@ router.get("/all", authUser, (req, res) => {
 // @desc Get all donations that haven't been responded to by a staff member
 // @access Private
 router.get("/unresolved", authUser, (req, res) => {
-  Donation.find({ responseStatus: false }).sort({createdDate: 1}).then((docs) => {
+  // Make sure the args are valid (sortable by MongoDB)
+  Object.getOwnPropertyNames(req.query).forEach((param) => {
+    if(param !== "createdDate") {
+      return res.status(400).send("Cannot sort by ", param);
+    }
+  })
+  for(var key in req.query) {
+    req.query[key] = parseInt(req.query[key]);
+    if(Math.abs(req.query[key]) !== 1) {
+      return res.status(400).send("Cannot sort by ", req.query[key]);
+    }
+  }
+  Donation.find({ responseStatus: false }).sort(req.query).then((docs) => {
     res.status(200).send(docs);
   });
 });
