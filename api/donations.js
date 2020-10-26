@@ -125,18 +125,14 @@ router.get("/all", authUser, (req, res) => {
 // @desc Get all donations that haven't been responded to by a staff member
 // @access Private
 router.get("/unresolved", authUser, (req, res) => {
-  // Make sure the args are valid (sortable by MongoDB)
-  Object.getOwnPropertyNames(req.query).forEach((param) => {
-    if(param !== "createdDate") {
-      return res.status(400).send("Cannot sort by ", param);
-    }
-  })
-  for(var key in req.query) {
-    req.query[key] = parseInt(req.query[key]);
-    if(Math.abs(req.query[key]) !== 1) {
-      return res.status(400).send("Cannot sort by ", req.query[key]);
+  // Make sure the createdDate is valid (sortable by MongoDB (1, -1))
+  if(req.query.createdDate) {
+    req.query.createdDate = parseInt(req.query.createdDate);
+    if(Math.abs(req.query.createdDate) !== 1) {
+      return res.status(400).send("Cannot sort date by ", req.query.createdDate);
     }
   }
+
   Donation.find({ responseStatus: false }).sort(req.query).then((docs) => {
     res.status(200).send(docs);
   });
