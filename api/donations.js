@@ -131,7 +131,7 @@ router.get("/unresolved", authUser, (req, res) => {
     if(Math.abs(req.query.createdDate) !== 1) {
       return res.status(400).send("Cannot sort date by ", req.query.createdDate);
     }
-  } else 
+  }
 
   Donation.find({ responseStatus: false }).sort({createdDate: req.query.createdDate}).then((docs) => {
     res.status(200).send(docs);
