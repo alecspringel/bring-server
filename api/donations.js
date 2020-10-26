@@ -74,14 +74,16 @@ router.post("/respond", authUser, (req, res) => {
         //This should never occur. This would mean the donation no longer exists
         return res.status(500).send("Donation does not exist");
       }
-      var greeting = `Hello ${donation.first} ${donation.last}, this is BRING Recyling responding to your question about donating ${donation.itemName}. `;
-      // IMPLEMENT EMAIL MESSAGES
+      var greeting = `Hello ${donation.first} ${donation.last},\n\n` +
+      `This is BRING Recyling responding to your question about donating ${donation.itemName}.\n\n`;
+      greeting = greeting.concat(responseMessage);
+      greeting = greeting.concat("\n\nThank you for your inquiry,\n BRING Recycling");
       if (donation.preferEmail) {
-        const emailSubject = "BRING Recycling donation question response"
-        sendEmail(emailSubject, greeting.concat(responseMessage),null, donation.email);
+        const emailSubject = "BRING Recycling Donation"
+        sendEmail(emailSubject, greeting, null, donation.email);
       } 
       if (donation.preferPhone) {
-        sendSMS(donation.phone, greeting.concat(responseMessage));
+        sendSMS(donation.phone, greeting);
       }
       res.status(200).send("Message sent");
     }

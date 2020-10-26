@@ -29,7 +29,7 @@ function validateNewDonation(data) {
     errors.last = "Last name is required";
   }
   if (Validator.isEmpty(data.itemName)) {
-    errors.itemName = "Name of item(s) is required";
+    errors.itemName = "Name of item is required";
   }
   if (Validator.isEmpty(data.preferPhone)  || !Validator.isBoolean(data.preferPhone)) {
     errors.preferPhone = "Preferred contact method is malformed";
