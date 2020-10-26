@@ -1,6 +1,7 @@
 module.exports = {
   mongoURI:
     "mongodb+srv://abcd:bring123456789@main.oewq.mongodb.net/main?retryWrites=true&w=majority", // MongoDB URI
+  AWS_S3_BUCKET_NAME: "bring-donations",
   AWS_SECRET_ACCESS_KEY: "OCMIESMCES++FJEIOFJOEEFJIIOFEJOSFJ/F9pz",
   AWS_ACCESS_KEY_ID: "AIUFHEIHAFNCIECNEUI",
   TWILIO_SECURE_IDENTIFIER: "984u19u91u490124uoieuroiweuroe", // Twilio SID and auth token are used to send SMS messages

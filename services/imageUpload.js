@@ -44,7 +44,7 @@ const upload = multer({
   storage: multerS3({
     acl: "public-read",
     s3,
-    bucket: "bring-donations",
+    bucket: keys.AWS_S3_BUCKET_NAME,
     shouldTransform: function (req, file, cb) {
       cb(null, true)
     },
