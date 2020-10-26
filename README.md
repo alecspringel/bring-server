@@ -1,6 +1,6 @@
 # Bring Recycling Server
 ## Overview
-This Node server is responsible for responding to API requests made by the react front end, processing and storing uploaded images in AWS S3, and storing and retrieving donation data from a MongoDB database.
+This Node server is responsible for responding to API requests made by the react front end of the project (available [here](https://github.com/alecspringel/bring-client), processing and storing uploaded images in AWS S3, and storing and retrieving donation data from a MongoDB database.
 
 Additionally, the server also uses Slack's API to communicate with staff and Twilio's API to send SMS messages to potential donators.
 
