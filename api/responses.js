@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { authUser } = require("../middleware/authUser")
-const Response = require("../mongo/models/responses");
+const Response = require("../mongo/models/Responses");
 
 // @route POST api/responses/create
 // @desc Create a new preset response message
