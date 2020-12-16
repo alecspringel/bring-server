@@ -41,8 +41,8 @@ loginLimiter = rateLimit({
   message: "Max login api calls exceeded for this time period",
 });
 
-//app.use("/api/donations/create", donationLimiter);
-//app.use("/api/user", loginLimiter);
+app.use("/api/donations/create", donationLimiter);
+app.use("/api/user", loginLimiter);
 // Endpoints
 app.use("/api/user", user);
 app.use("/api/donations", donations);
