@@ -32,5 +32,8 @@
     "sharp": "^0.26.2",
     "twilio": "^3.50.0",
     "validator": "^13.1.17"
+  },
+  "resolutions": {
+    "minipass": "2.7.0"
   }
 }
