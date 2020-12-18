@@ -12,14 +12,14 @@ const jwt = require("jsonwebtoken");
 
   For the sake of demonstration, a single "master" username and password will be used.
 */
-const { ADMIN_USERNAME, ADMIN_PASSWORD, JWT_AUTH_KEY } = require("../config/keys");
-
+const { JWT_AUTH_KEY } = require("../config/keys");
+const User = require("../mongo/models/User");
 
 // @route POST api/user/login
 // @desc Login user and return JWT token
 // @access Public
-router.post("/login", (req, res) => {
-  const { username , password }= req.body;
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
   // Form validation
   const { errors, isValid } = validateLoginInput(req.body);
   // Check validation
@@ -27,30 +27,45 @@ router.post("/login", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  if(username !== ADMIN_USERNAME) {
-    return res.status(400).json({ username: "That User Name does not exist" });
-  }
-  if (password !== ADMIN_PASSWORD) {
-    return res.status(400).json({ password: "Password is incorrect" });
-  }
-
-  const payload = {
-    auth: true
-  }
-
-  // Typically, some user info would go within the token
-  jwt.sign(
-    payload,
-    JWT_AUTH_KEY,
-    {
-      expiresIn: 86400, // 1 day in seconds
-    },
-    (err, token) => {
-      res.status(200).json({
-        token: "Bearer " + token,
+  email = email.toLowerCase();
+  var found = null;
+  await User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return res
+          .status(400)
+          .json({ email: "Could not find an account with that email" });
+      }
+      found = user;
+      return bcrypt.compare(password, user.password);
+    })
+    .then((isMatch) => {
+      if (isMatch) {
+        // User matched
+        // Create JWT Payload
+        const payload = {
+          id: found._id,
+          first: found.first,
+          last: found.last,
+          email: found.email,
+          isAdmin: found.isAdmin,
+        };
+        // Sign token
+        ret.token =
+          "Bearer " +
+          jwt.sign(payload, JWT_AUTH_KEY, {
+            expiresIn: 259200, // 3 days in seconds
+          });
+        return ret;
+      } else {
+        return res.status(400).json({ password: "Incorrect password" });
+      }
+    })
+    .catch(() => {
+      return res.status(500).json({
+        password: "There was an issue while signing in. Please try again",
       });
-    }
-  );
+    });
 });
 
 module.exports = router;
