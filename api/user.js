@@ -1,18 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { validateLoginInput, validateInvite } = require("../validation/user");
+const {
+  validateLoginInput,
+  validateInvite,
+  validateFinish,
+} = require("../validation/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { generatePassword } = require("../helpers/password");
-/* 
-  DO NOT DO THIS IN PRODUCTION.
-
-  Typically, users will be stored in MongoDB with their usernames and hashed passwords.
-  Even if having distinct users is unnecessary, it is safer to have individual accounts,
-  rather than one master account in case credentials are compromised.
-
-  For the sake of demonstration, a single "master" username and password will be used.
-*/
 const { JWT_AUTH_KEY } = require("../config/keys");
 const User = require("../mongo/models/User");
 const { authUser } = require("../middleware/authUser");
@@ -114,6 +109,48 @@ router.post("/invite", authUser, authAdmin, async (req, res) => {
         invitedBy: req.user.email,
       });
       sendEmail("BRING Recycling Account", message, null, email);
+      return res.sendStatus(200);
+    });
+  });
+});
+
+// @route POST api/user/finish
+// @desc Invited users can finish account setup (using name and password)
+// @access Private
+router.post("/finish", authUser, async (req, res) => {
+  var { first, last, password, confirm } = req.body;
+  // Form validation
+  const { errors, isValid } = validateFinish({
+    first,
+    last,
+    password,
+    confirm,
+  });
+  // Check validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  var user = await User.findOne({ email: req.user.email });
+  // If the user is authenticated by JWT, but is not found,
+  // they were likely removed by an admin before their token expired
+  if (!user) {
+    return res.sendStatus(401);
+  }
+  // Users cannot access the endpoint after using it once
+  if (user.first) {
+    return res.sendStatus(401);
+  }
+
+  //Hash password
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+      if (err) throw err;
+      //Capitalize first letters
+      user.first = first.substring(0, 1).toUpperCase() + first.substring(1);
+      user.last = last.substring(0, 1).toUpperCase() + last.substring(1);
+      user.password = hash;
+      user.save();
       return res.sendStatus(200);
     });
   });

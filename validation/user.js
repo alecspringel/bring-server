@@ -47,4 +47,39 @@ function validateInvite(data) {
   };
 }
 
-module.exports = { validateInvite, validateLoginInput };
+function validateFinish(data) {
+  let errors = {};
+
+  data.first = !isEmpty(data.first) ? data.first : "";
+  data.last = !isEmpty(data.last) ? data.last : "";
+  data.password = !isEmpty(data.password) ? data.password : "";
+  data.confirm = !isEmpty(data.confirm) ? data.confirm : "";
+
+  // first
+  if (validator.isEmpty(data.first)) {
+    errors.first = "First name is required";
+  }
+  // last
+  if (validator.isEmpty(data.last)) {
+    errors.last = "Last name is required";
+  }
+  // password
+  if (validator.isEmpty(data.password)) {
+    errors.password = "Password is required";
+  }
+  if (!/^(?=.*\d).{6,20}$/.test(data.password)) {
+    errors.password =
+      "Password must be between 6-20 characters and include a number";
+  }
+  // confirm
+  if (data.password !== data.confirm) {
+    errors.confirm = "Passwords do not match";
+  }
+
+  return {
+    errors,
+    isValid: isEmpty(errors),
+  };
+}
+
+module.exports = { validateInvite, validateLoginInput, validateFinish };
