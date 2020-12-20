@@ -174,4 +174,21 @@ router.post("/finish", authUser, async (req, res) => {
   });
 });
 
+// @route POST api/user/remove
+// @desc Allows admins to revoke user accounts (delete's account)
+// @access Private, Admin
+router.post("/remove", authUser, authAdmin, async (req, res) => {
+  var { email } = req.body;
+
+  var user = await User.deleteOne({ email: email })
+    .then((result) => {
+      if (result.deletedCount === 1) {
+        return res.sendStatus(200);
+      } else {
+        return res.sendStatus(400);
+      }
+    })
+    .catch((err) => res.sendStatus(500));
+});
+
 module.exports = router;
