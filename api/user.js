@@ -157,7 +157,9 @@ router.post("/finish", authUser, async (req, res) => {
   }
   // Users cannot access the endpoint after using it once
   if (user.first) {
-    return res.sendStatus(401);
+    return res
+      .status(400)
+      .json({ error: "An account with this email has already signed up" });
   }
 
   //Hash password
