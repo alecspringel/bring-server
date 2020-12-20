@@ -37,7 +37,7 @@ function validateInvite(data) {
     errors.email = "Invalid email";
   }
   // isAdmin
-  if (validator.isEmpty(data.isAdmin)) {
+  if (typeof data.isAdmin !== "boolean") {
     errors.isAdmin = "Must specify if user is admin or not";
   }
 

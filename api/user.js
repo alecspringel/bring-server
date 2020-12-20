@@ -14,6 +14,24 @@ const { authUser } = require("../middleware/authUser");
 const { authAdmin } = require("../middleware/authAdmin");
 const { sendEmail } = require("../services/nodeMailer");
 
+// @route GET api/user/all
+// @desc Get all users (employees)
+// @access Admin
+router.get("/all", authUser, authAdmin, async (req, res) => {
+  var response = [];
+  User.find().then((users) => {
+    users.forEach((user) => {
+      response.push({
+        first: user.first,
+        last: user.last,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      });
+    });
+    res.status(200).send(response);
+  });
+});
+
 // @route POST api/user/login
 // @desc Login user and return JWT token
 // @access Public
@@ -70,7 +88,7 @@ router.post("/login", async (req, res) => {
 
 // @route POST api/user/invite
 // @desc Allows another admin to invite another user to sign up
-// @access Private
+// @access Private, Admin
 router.post("/invite", authUser, authAdmin, async (req, res) => {
   var { email, isAdmin } = req.body;
   // Form validation
