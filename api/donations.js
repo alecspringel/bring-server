@@ -19,6 +19,11 @@ const adminURL = keys.ADMIN_URL
 // @access Public
 router.post("/create", (req, res) => {
   //Validation is handled in services/imageUpload.js within multer
+  const { isValid, errors } = validateNewDonation(req.body);
+  if (!isValid) {
+    req.body.errors = errors;
+    return res.status(400).send(req.body.errors);
+  }
   imageUpload(req, res, (err) => {
     if (err) {
       return res.status(400).send(req.body.errors);
