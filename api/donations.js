@@ -120,6 +120,21 @@ router.post("/delete", authUser, (req, res) => {
   res.status(200).send();
 });
 
+// @route POST api/donations/bulkDelete"
+// @desc Delete list of donations already stored in database
+// ex. of posted json data: {"ids": ["5f925ffa5c", "5f925ffa5d"]}
+// @access Private
+router.post("/bulkDelete", authUser, (req, res) => {
+  let ids = req.body.ids;
+  console.log(typeof req.body.ids);
+  ids.forEach(id => {
+    Donation.findByIdAndDelete(id).then((docs) => {
+      console.log("Deleted:", id);
+    });
+  });
+  res.status(200).send();
+});
+
 // @route GET api/donations/all
 // @desc Get all donations
 // @access Private

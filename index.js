@@ -1,14 +1,16 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-var cors = require('cors');
+var cors = require("cors");
 // Endpoints
 const user = require("./api/user");
 const donations = require("./api/donations");
 const responses = require("./api/responses");
+const { loginLimiter, donationLimiter } = require("./rateLimits");
 // MongoDB Drivers/URI
 const mongoose = require("mongoose");
 const db = require("./config/keys.js").mongoURI;
+// Config
 const PORT = 5000;
 
 // Connect to MongoDB
@@ -26,6 +28,8 @@ app.use(
 );
 app.use(bodyParser.json());
 
+app.use("/api/donations/create", donationLimiter);
+app.use("/api/user/login", loginLimiter);
 // Endpoints
 app.use("/api/user", user);
 app.use("/api/donations", donations);
