@@ -1,8 +1,8 @@
 const rateLimit = require("express-rate-limit");
 
 const loginLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 10,
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 20,
   message: "Max login api calls exceeded for this time period",
 });
 
