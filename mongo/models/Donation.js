@@ -47,8 +47,8 @@ const DonationSchema = new Schema({
   },
   responseType: {
     type: String,
-    enum : ['YES', 'MAYBE', 'NO', null],
-    default: null
+    enum: ["YES", "MAYBE", "NO", null],
+    default: null,
   },
   responseMessage: {
     type: String,
@@ -57,6 +57,17 @@ const DonationSchema = new Schema({
   imageUrls: {
     type: [String],
     required: true,
+  },
+  staffResponder: {
+    id: { default: null, type: String },
+    name: {
+      default: null,
+      type: String,
+    },
+  },
+  respondedDate: {
+    default: null,
+    type: Date,
   },
 });
 

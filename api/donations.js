@@ -19,11 +19,12 @@ const adminURL = keys.ADMIN_URL
 // @access Public
 router.post("/create", (req, res) => {
   //Validation is handled in services/imageUpload.js within multer
-  const { isValid, errors } = validateNewDonation(req.body);
-  if (!isValid) {
-    req.body.errors = errors;
-    return res.status(400).send(req.body.errors);
-  }
+  // console.log(req)
+  // const { isValid, errors } = validateNewDonation(req.body);
+  // if (!isValid) {
+  //   req.body.errors = errors;
+  //   return res.status(400).send(req.body.errors);
+  // }
   imageUpload(req, res, (err) => {
     if (err) {
       return res.status(400).send(req.body.errors);
@@ -67,12 +68,18 @@ router.post("/create", (req, res) => {
 // @access Private
 router.post("/respond", authUser, (req, res) => {
   const { donationId, responseMessage, responseType } = req.body;
+  const staffResponder = { 
+    id: req.user._id,
+    name: req.user.first + " " + req.user.last
+  }
   Donation.findOneAndUpdate(
     { _id: donationId },
     {
       responseStatus: true,
       responseType,
       responseMessage,
+      staffResponder,
+      respondedDate: new Date()
     },
     (err, donation) => {
       if(!donation) {
