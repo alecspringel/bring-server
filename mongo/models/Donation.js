@@ -1,8 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+// Use shortid to create easy reference to donation for lookup
+const shortid = require('shortid');
 
 // Create Schema
 const DonationSchema = new Schema({
+  _id: {
+    type: String,
+    default: shortid.generate
+  },
   first: {
     type: String,
     default: null,
