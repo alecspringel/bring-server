@@ -171,9 +171,11 @@ router.get("/unresolved", authUser, (req, res) => {
 // @route GET api/donations/resolved
 // @desc Get all donations that have been responded to by a staff member
 // @access Private
-router.get("/resolved", authUser, (req, res) => {
-  Donation.find({ responseStatus: true }).then((docs) => {
-    res.status(200).send(docs);
+router.get("/resolved", authUser, async (req, res) => {
+  console.log(req.query)
+  const count = await Donation.count({ responseStatus: true })
+  Donation.find({ responseStatus: true }).skip(parseInt(req.query.skip)).limit(parseInt(req.query.limit)).then((docs) => {
+    res.status(200).send({data: docs, count});
   });
 });
 
