@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Donation = require("../mongo/models/Donation");
 const { authUser } = require("../middleware/authUser")
-const keys = require("../config/keys");
 const { validateNewDonation } = require("../validation/donations");
 const sendSMS = require("../services/twilioSMS");
 const {sendEmail, sendStaffEmailNotification} = require("../services/nodeMailer");
@@ -12,7 +11,7 @@ const upload = require("../services/imageUpload");
 const MAX_IMAGES = 5;
 const imageUpload = upload.array("image", MAX_IMAGES);
 //URL of admin page
-const adminURL = keys.ADMIN_URL
+const adminURL = process.env.ADMIN_URL
 
 // @route POST api/donations/create
 // @desc Create a donation with contact info
