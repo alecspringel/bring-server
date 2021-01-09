@@ -1,7 +1,5 @@
-const keys = require("../config/keys");
-
-const twilioAccountSid = keys.TWILIO_SECURE_IDENTIFIER
-const twilioAuthToken = keys.TWILIO_AUTH_TOKEN
+const twilioAccountSid = process.env.TWILIO_SECURE_IDENTIFIER
+const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN
 const client = require('twilio')(twilioAccountSid, twilioAuthToken)
 const senderPhoneNumber = "+12059534885";
 

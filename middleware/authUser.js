@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { JWT_AUTH_KEY } = require("../config/keys");
+const JWT_AUTH_KEY = process.env.JWT_AUTH_KEY;
 
 // Middleware for authenticating and identifying the user who sent the request
 // Stores the user's identity in (req.user)

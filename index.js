@@ -9,7 +9,7 @@ const responses = require("./api/responses");
 const { loginLimiter, donationLimiter } = require("./rateLimits");
 // MongoDB Drivers/URI
 const mongoose = require("mongoose");
-const db = require("./config/keys.js").mongoURI;
+const db = process.env.mongoURI;
 // Config
 const PORT = 5000;
 

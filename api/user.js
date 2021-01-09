@@ -8,7 +8,7 @@ const {
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { generatePassword } = require("../helpers/password");
-const { JWT_AUTH_KEY } = require("../config/keys");
+const JWT_AUTH_KEY = process.env.JWT_AUTH_KEY;
 const User = require("../mongo/models/User");
 const { authUser } = require("../middleware/authUser");
 const { authAdmin } = require("../middleware/authAdmin");
