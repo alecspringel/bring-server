@@ -1,0 +1,20 @@
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: bring-recycling-mapping
+  namespace: ambassador-edge
+spec:
+  host: bringrecycling.mvpstudio.org
+  prefix: /
+  service: bring-recycling-webserver.prod-bring-recycling
+---
+apiVersion: getambassador.io/v2
+kind: Host
+metadata:
+  name: bring-recycling-host
+  namespace: ambassador-edge
+spec:
+  hostname: bringrecycling.mvpstudio.org
+  acmeProvider:
+    email: mvpstudiooregon@gmail.com
+---

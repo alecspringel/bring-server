@@ -1,0 +1,95 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: prod-bring-recycling
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: web-server
+          image: mvpstudio/bring-server:Jan9
+          resources:
+            limits:
+              cpu: 0.25
+              memory: 100Mi
+            requests:
+              cpu: 0.25
+              memory: 100Mi
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: mongoURI
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: mongoURI
+            - name: AWS_S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: AWS_S3_BUCKET_NAME
+            - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: AWS_ACCESS_KEY_ID
+            - name: TWILIO_SECURE_IDENTIFIER
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: TWILIO_SECURE_IDENTIFIER
+            - name: TWILIO_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: TWILIO_AUTH_TOKEN
+            - name: SLACK_WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: SLACK_WEBHOOK_URL
+            - name: EMAIL_USER
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: EMAIL_USER
+            - name: EMAIL_PW
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: EMAIL_PW
+            - name: JWT_AUTH_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: JWT_AUTH_KEY
+            - name: ADMIN_URL
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: ADMIN_URL
+            - name: ADMIN_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: ADMIN_USERNAME
+            - name: ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-opaque
+                key: ADMIN_PASSWORD
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
