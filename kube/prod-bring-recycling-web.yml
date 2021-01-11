@@ -4,9 +4,17 @@ kind: Deployment
 metadata:
   name: web
   namespace: prod-bring-recycling
+  labels:
+    app: web
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      app: web
   template:
+    metadata:
+      labels:
+        app: web
     spec:
       containers:
         - name: web-server
@@ -34,60 +42,60 @@ spec:
                   name: secret-opaque
                   key: AWS_S3_BUCKET_NAME
             - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: AWS_SECRET_ACCESS_KEY
             - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: AWS_ACCESS_KEY_ID
             - name: TWILIO_SECURE_IDENTIFIER
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: TWILIO_SECURE_IDENTIFIER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: TWILIO_SECURE_IDENTIFIER
             - name: TWILIO_AUTH_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: TWILIO_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: TWILIO_AUTH_TOKEN
             - name: SLACK_WEBHOOK_URL
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: SLACK_WEBHOOK_URL
             - name: EMAIL_USER
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: EMAIL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: EMAIL_USER
             - name: EMAIL_PW
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: EMAIL_PW
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: EMAIL_PW
             - name: JWT_AUTH_KEY
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: JWT_AUTH_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: JWT_AUTH_KEY
             - name: ADMIN_URL
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: ADMIN_URL
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: ADMIN_URL
             - name: ADMIN_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: ADMIN_USERNAME
             - name: ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: secret-opaque
-                key: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: ADMIN_PASSWORD
   strategy:
     type: RollingUpdate
     rollingUpdate:
