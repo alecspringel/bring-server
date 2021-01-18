@@ -5,3 +5,4 @@ Dockerfile
 .git
 .gitignore
 config/keys.js
+bring_env.sh

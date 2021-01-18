@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 var cors = require("cors");
+var morgan = require('morgan')
 // Endpoints
 const user = require("./api/user");
 const donations = require("./api/donations");
@@ -12,7 +13,6 @@ const mongoose = require("mongoose");
 const db = process.env.mongoURI;
 // Config
 const PORT = 5000;
-
 // Connect to MongoDB
 mongoose
   .connect(db, { useNewUrlParser: true, useFindAndModify: false })
@@ -20,6 +20,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(cors());
+app.use(morgan('combined'))
 // Bodyparser middleware
 app.use(
   bodyParser.urlencoded({
