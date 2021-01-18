@@ -1,12 +1,22 @@
 apiVersion: getambassador.io/v2
 kind: Mapping
 metadata:
-  name: bring-recycling-mapping
+  name: bring-recycling-node-mapping
+  namespace: ambassador-edge
+spec:
+  host: bringrecycling.mvpstudio.org
+  prefix: /api
+  service: bring-recycling-webserver.prod-bring-recycling:5000
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: bring-recycling-react-mapping
   namespace: ambassador-edge
 spec:
   host: bringrecycling.mvpstudio.org
   prefix: /
-  service: bring-recycling-webserver.prod-bring-recycling
+  service: bring-recycling-react.prod-bring-recycling
 ---
 apiVersion: getambassador.io/v2
 kind: Host
