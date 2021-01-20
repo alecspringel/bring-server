@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: web-server
-          image: mvpstudio/bring-server:Jan9
+          image: mvpstudio/bring-server:NodeJan18
           resources:
             limits:
               cpu: 0.25

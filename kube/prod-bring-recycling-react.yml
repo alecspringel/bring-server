@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: react-client
-          image: mvpstudio/bring-server:ReactJan12
+          image: mvpstudio/bring-server:ReactJan20
           resources:
             limits:
               cpu: 0.1
