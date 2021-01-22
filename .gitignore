@@ -1,3 +1,4 @@
 config/keys.js
 node_modules
 proj-workspace.code.-workspace
+bring_env.sh
