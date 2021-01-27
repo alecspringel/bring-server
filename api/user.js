@@ -10,9 +10,11 @@ const bcrypt = require("bcryptjs");
 const { generatePassword } = require("../helpers/password");
 const { JWT_AUTH_KEY } = require("../config/keys");
 const User = require("../mongo/models/User");
+const ResetPassword = require("../mongo/models/ResetPassword");
 const { authUser } = require("../middleware/authUser");
 const { authAdmin } = require("../middleware/authAdmin");
 const { sendEmail } = require("../services/nodeMailer");
+const { v4: uuidv4 } = require("uuid");
 
 // @route GET api/user/all
 // @desc Get all users (employees)
@@ -191,6 +193,30 @@ router.post("/remove", authUser, authAdmin, async (req, res) => {
       }
     })
     .catch((err) => res.sendStatus(500));
+});
+
+// @route POST api/user/resetpassword
+// @desc Sends confirmation email with link to reset password
+// @access Public
+router.post("/resetpassword", async (req, res) => {
+  var { email } = req.body;
+  var user = await User.findOne({ email });
+  if (user) {
+    var tokenId = uuidv4();
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(tokenId, salt, (err, hash) => {
+        if (err) throw err;
+        ResetPassword.create({ _id: hash, userId: user._id });
+        var msg =
+          `${user.first} ${user.last},\n\n` +
+          `To reset your password for the BRING Recycling donations app, follow the URL below:\n\n` +
+          `${process.env.CLIENT_URL + "/login/reset/password/" + hash}\n\n` +
+          `If you did not reset your password, you can ignore this email.`;
+        sendEmail("BRING Password Reset", msg, null, user.email);
+      });
+    });
+  }
+  return res.sendStatus(200);
 });
 
 module.exports = router;
