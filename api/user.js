@@ -4,6 +4,7 @@ const {
   validateLoginInput,
   validateInvite,
   validateFinish,
+  validatePassword,
 } = require("../validation/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -15,6 +16,7 @@ const { authUser } = require("../middleware/authUser");
 const { authAdmin } = require("../middleware/authAdmin");
 const { sendEmail } = require("../services/nodeMailer");
 const { v4: uuidv4 } = require("uuid");
+const isEmpty = require("is-empty");
 
 // @route GET api/user/all
 // @desc Get all users (employees)
@@ -195,10 +197,10 @@ router.post("/remove", authUser, authAdmin, async (req, res) => {
     .catch((err) => res.sendStatus(500));
 });
 
-// @route POST api/user/resetpassword
+// @route POST api/user/forgotpassword
 // @desc Sends confirmation email with link to reset password
 // @access Public
-router.post("/resetpassword", async (req, res) => {
+router.post("/forgotpassword", async (req, res) => {
   var { email } = req.body;
   var user = await User.findOne({ email });
   if (user) {
@@ -207,16 +209,62 @@ router.post("/resetpassword", async (req, res) => {
       bcrypt.hash(tokenId, salt, (err, hash) => {
         if (err) throw err;
         ResetPassword.create({ _id: hash, userId: user._id });
+        hash = hash.replace("/", "slash");
         var msg =
           `${user.first} ${user.last},\n\n` +
           `To reset your password for the BRING Recycling donations app, follow the URL below:\n\n` +
-          `${process.env.CLIENT_URL + "/login/reset/password/" + hash}\n\n` +
-          `If you did not reset your password, you can ignore this email.`;
+          `${
+            process.env.CLIENT_URL +
+            "/login/reset/password/" +
+            tokenId +
+            "/" +
+            hash
+          }\n\n` +
+          `If you did not reset your password, please ignore this email.`;
         sendEmail("BRING Password Reset", msg, null, user.email);
       });
     });
   }
   return res.sendStatus(200);
+});
+
+// @route POST api/user/setpassword
+// @desc Resets password using a time expiring token
+// @access Public
+router.post("/resetpassword", async (req, res) => {
+  var { tokenid, hashedid, password } = req.body;
+  var { errors, isValid } = validatePassword(password);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  hashedid = hashedid.replace("slash", "/");
+  await ResetPassword.findById(hashedid, (err, doc) => {
+    if (doc) {
+      const TEN_MINUTES = 60 * 10 * 1000; /* ms */
+      if (new Date() - doc.created > TEN_MINUTES) {
+        errors.error = "URL Expired. Please try resetting your password again.";
+        return;
+      }
+      bcrypt.compare(tokenid, doc._id, async (err, result) => {
+        if (err || !result) {
+          errors.error = "Invalid URL";
+          return;
+        }
+        console.log(doc.created);
+        user = await User.findById(doc.userId);
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(password, salt, (err, hash) => {
+            if (err) throw err;
+            user.password = password;
+            user.save();
+          });
+        });
+      });
+    } else {
+      errors.error = "Invalid URL";
+    }
+  });
+  return isEmpty(errors) ? res.sendStatus(200) : res.status(400).json(errors);
 });
 
 module.exports = router;

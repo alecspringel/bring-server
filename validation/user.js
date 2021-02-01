@@ -82,4 +82,22 @@ function validateFinish(data) {
   };
 }
 
-module.exports = { validateInvite, validateLoginInput, validateFinish };
+function validatePassword(password) {
+  let errors = {};
+  password = !isEmpty(password) ? password : "";
+  if (!/^(?=.*\d).{6,20}$/.test(password)) {
+    errors.password =
+      "Password must be between 6-20 characters and include a number";
+  }
+  return {
+    errors,
+    isValid: isEmpty(errors),
+  };
+}
+
+module.exports = {
+  validateInvite,
+  validateLoginInput,
+  validateFinish,
+  validatePassword,
+};
