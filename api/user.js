@@ -238,7 +238,12 @@ router.post("/resetpassword", async (req, res) => {
     return res.status(400).json(errors);
   }
   hashedid = hashedid.replace("slash", "/");
-  await ResetPassword.findById(hashedid, (err, doc) => {
+  var token = await ResetPassword.findById(hashedid, (err, doc) => {
+    if (doc.used) {
+      errors.error =
+        "URL has already been used to reset password. Please use a new link by resetting again.";
+      return;
+    }
     if (doc) {
       const TEN_MINUTES = 60 * 10 * 1000; /* ms */
       if (new Date() - doc.created > TEN_MINUTES) {
@@ -255,16 +260,21 @@ router.post("/resetpassword", async (req, res) => {
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(password, salt, (err, hash) => {
             if (err) throw err;
-            user.password = password;
+            user.password = hash;
             user.save();
           });
         });
       });
     } else {
       errors.error = "Invalid URL";
+      return;
     }
   });
-  return isEmpty(errors) ? res.sendStatus(200) : res.status(400).json(errors);
+  token.used = true;
+  token.save();
+  return isEmpty(errors) && !errors.error
+    ? res.sendStatus(200)
+    : res.status(400).json(errors);
 });
 
 module.exports = router;
