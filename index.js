@@ -10,13 +10,15 @@ const responses = require("./api/responses");
 const { loginLimiter, donationLimiter } = require("./rateLimits");
 // MongoDB Drivers/URI
 const mongoose = require("mongoose");
-const db = require("./config/keys.js").mongoURI;
 // Config
 const PORT = 5000;
 
 // Connect to MongoDB
 mongoose
-  .connect(db, { useNewUrlParser: true, useFindAndModify: false })
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+  })
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.log(err));
 

@@ -1,14 +1,13 @@
 const aws = require("aws-sdk");
 const multer = require("multer");
 const multerS3 = require("multer-s3-transform");
-const keys = require("../config/keys");
 const sharp = require("sharp");
 const { validateNewDonation } = require("../validation/donations");
 const { v4: uuidv4 } = require("uuid");
 
 aws.config.update({
-  secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
-  accessKeyId: keys.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   region: "us-west-2",
 });
 
@@ -45,7 +44,7 @@ const upload = multer({
   storage: multerS3({
     acl: "public-read",
     s3,
-    bucket: keys.AWS_S3_BUCKET_NAME,
+    bucket: process.env.AWS_S3_BUCKET_NAME,
     shouldTransform: function (req, file, cb) {
       cb(null, true);
     },

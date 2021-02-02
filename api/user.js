@@ -9,7 +9,6 @@ const {
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { generatePassword } = require("../helpers/password");
-const { JWT_AUTH_KEY } = require("../config/keys");
 const User = require("../mongo/models/User");
 const ResetPassword = require("../mongo/models/ResetPassword");
 const { authUser } = require("../middleware/authUser");
@@ -74,7 +73,7 @@ router.post("/login", async (req, res) => {
         // Sign token
         const token =
           "Bearer " +
-          jwt.sign(payload, JWT_AUTH_KEY, {
+          jwt.sign(payload, process.env.JWT_AUTH_KEY, {
             expiresIn: 259200, // 3 days in seconds
           });
         return res.status(200).json({ token });
