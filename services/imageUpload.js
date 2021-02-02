@@ -2,8 +2,9 @@ const aws = require("aws-sdk");
 const multer = require("multer");
 const multerS3 = require("multer-s3-transform");
 const keys = require("../config/keys");
-const sharp = require("sharp")
+const sharp = require("sharp");
 const { validateNewDonation } = require("../validation/donations");
+const { v4: uuidv4 } = require("uuid");
 
 aws.config.update({
   secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
@@ -46,24 +47,29 @@ const upload = multer({
     s3,
     bucket: keys.AWS_S3_BUCKET_NAME,
     shouldTransform: function (req, file, cb) {
-      cb(null, true)
+      cb(null, true);
     },
-    transforms: [{
-      id: 'original',
-      key: function (req, file, cb) {
-        cb(null, makeid(10));
+    transforms: [
+      {
+        id: "original",
+        key: function (req, file, cb) {
+          cb(null, uuidv4());
+        },
+        transform: function (req, file, cb) {
+          //Perform desired transformations
+          cb(
+            null,
+            sharp().resize({ width: 900, fit: sharp.fit.contain }).jpeg()
+          );
+        },
       },
-      transform: function (req, file, cb) {
-        //Perform desired transformations
-        cb(null, sharp().resize({width: 900, fit: sharp.fit.contain}).jpeg())
-      }
-    }],
+    ],
     contentType: multerS3.AUTO_CONTENT_TYPE,
     metadata: function (req, file, cb) {
       cb(null, { fieldName: "TESTING_METADATA" });
     },
     key: function (req, file, cb) {
-      cb(null, makeid(10));
+      cb(null, uuidv4());
     },
   }),
 });

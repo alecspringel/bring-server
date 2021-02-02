@@ -10,7 +10,7 @@ function validateLoginInput(data) {
 
   // email checks
   if (validator.isEmpty(data.email)) {
-    errors.email = "email field is required";
+    errors.email = "Email field is required";
   }
   // Password checks
   if (validator.isEmpty(data.password)) {

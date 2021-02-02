@@ -1,15 +1,21 @@
 const rateLimit = require("express-rate-limit");
 
 const loginLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
+  windowMs: 1 * 60 * 1000, // 1 minute
   max: 20,
-  message: "Max login api calls exceeded for this time period",
+  message: {
+    error:
+      "Maximum sign in attempts reach for this time period. Please try again later.",
+  },
 });
 
 const donationLimiter = rateLimit({
-  windowMs: 240 * 60 * 1000, // 4 hours
-  max: 15,
-  message: "Max donation api calls exceeded for this time period",
+  windowMs: 1 * 60 * 60 * 1000, // 1 hour
+  max: 10,
+  message: {
+    error:
+      "You've reached the maximum donations allowed in this time period. Please try again later.",
+  },
 });
 
 module.exports = { donationLimiter, loginLimiter };
