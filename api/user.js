@@ -185,6 +185,9 @@ router.post("/finish", authUser, async (req, res) => {
 router.post("/remove", authUser, authAdmin, async (req, res) => {
   var { email } = req.body;
 
+  if (req.user.email === email) {
+    return res.sendStatus(400);
+  }
   var user = await User.deleteOne({ email: email })
     .then((result) => {
       if (result.deletedCount === 1) {

@@ -64,13 +64,13 @@ router.post("/create", (req, res) => {
           message = `1 new donation question about ${
             req.body.itemName
           } was posted. There are currently ${pending} questions waiting for review. Respond to all of them at ${
-            adminURL + "/admin"
+            process.env.CLIENT_URL + "/admin"
           }`;
         }
         sendStaffEmailNotification(
           pending,
           req.body.itemName,
-          adminURL,
+          process.env.CLIENT_URL + "/admin",
           message
         );
         sendSlackNotification(message);
