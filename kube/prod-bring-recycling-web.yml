@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: web-server
-          image: mvpstudio/bring-server:NodeJan22v2
+          image: mvpstudio/bring-server:NodeFeb12
           resources:
             limits:
               cpu: 0.25
@@ -31,11 +31,11 @@ spec:
           env:
             - name: NODE_ENV
               value: production
-            - name: mongoURI
+            - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
                   name: secret-opaque
-                  key: mongoURI
+                  key: MONGO_URI
             - name: AWS_S3_BUCKET_NAME
               valueFrom:
                 secretKeyRef:
@@ -86,11 +86,11 @@ spec:
                 secretKeyRef:
                   name: secret-opaque
                   key: JWT_AUTH_KEY
-            - name: ADMIN_URL
+            - name: CLIENT_URL
               valueFrom:
                 secretKeyRef:
                   name: secret-opaque
-                  key: ADMIN_URL
+                  key: CLIENT_URL
             - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: react-client
-          image: mvpstudio/bring-server:ReactJan20v2
+          image: mvpstudio/bring-server:ReactFeb12
           resources:
             limits:
               cpu: 0.1
@@ -28,6 +28,9 @@ spec:
               memory: 100Mi
           ports:
             - containerPort: 3000
+          env:
+            - name: REACT_APP_SERVER_URL
+              value: https://bringrecycling.mvpstudio.org
   strategy:
     type: RollingUpdate
     rollingUpdate:
