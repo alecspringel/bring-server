@@ -4,15 +4,20 @@ const {
   validateLoginInput,
   validateInvite,
   validateFinish,
+  validatePassword,
 } = require("../validation/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { generatePassword } = require("../helpers/password");
-const JWT_AUTH_KEY = process.env.JWT_AUTH_KEY;
+
+
 const User = require("../mongo/models/User");
+const ResetPassword = require("../mongo/models/ResetPassword");
 const { authUser } = require("../middleware/authUser");
 const { authAdmin } = require("../middleware/authAdmin");
 const { sendEmail } = require("../services/nodeMailer");
+const { v4: uuidv4 } = require("uuid");
+const isEmpty = require("is-empty");
 
 // @route GET api/user/all
 // @desc Get all users (employees)
@@ -70,7 +75,7 @@ router.post("/login", async (req, res) => {
         // Sign token
         const token =
           "Bearer " +
-          jwt.sign(payload, JWT_AUTH_KEY, {
+          jwt.sign(payload, process.env.JWT_AUTH_KEY, {
             expiresIn: 259200, // 3 days in seconds
           });
         return res.status(200).json({ token });
@@ -182,6 +187,9 @@ router.post("/finish", authUser, async (req, res) => {
 router.post("/remove", authUser, authAdmin, async (req, res) => {
   var { email } = req.body;
 
+  if (req.user.email === email) {
+    return res.sendStatus(400);
+  }
   var user = await User.deleteOne({ email: email })
     .then((result) => {
       if (result.deletedCount === 1) {
@@ -191,6 +199,86 @@ router.post("/remove", authUser, authAdmin, async (req, res) => {
       }
     })
     .catch((err) => res.sendStatus(500));
+});
+
+// @route POST api/user/forgotpassword
+// @desc Sends confirmation email with link to reset password
+// @access Public
+router.post("/forgotpassword", async (req, res) => {
+  var { email } = req.body;
+  var user = await User.findOne({ email });
+  if (user) {
+    var tokenId = uuidv4();
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(tokenId, salt, (err, hash) => {
+        if (err) throw err;
+        ResetPassword.create({ _id: hash, userId: user._id });
+        hash = hash.replace("/", "slash");
+        var msg =
+          `${user.first} ${user.last},\n\n` +
+          `To reset your password for the BRING Recycling donations app, follow the URL below:\n\n` +
+          `${
+            process.env.CLIENT_URL +
+            "/login/reset/password/" +
+            tokenId +
+            "/" +
+            hash
+          }\n\n` +
+          `If you did not reset your password, please ignore this email.`;
+        sendEmail("BRING Password Reset", msg, null, user.email);
+      });
+    });
+  }
+  return res.sendStatus(200);
+});
+
+// @route POST api/user/setpassword
+// @desc Resets password using a time expiring token
+// @access Public
+router.post("/resetpassword", async (req, res) => {
+  var { tokenid, hashedid, password } = req.body;
+  var { errors, isValid } = validatePassword(password);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  hashedid = hashedid.replace("slash", "/");
+  var token = await ResetPassword.findById(hashedid, (err, doc) => {
+    if (doc.used) {
+      errors.error =
+        "URL has already been used to reset password. Please use a new link by resetting again.";
+      return;
+    }
+    if (doc) {
+      const TEN_MINUTES = 60 * 10 * 1000; /* ms */
+      if (new Date() - doc.created > TEN_MINUTES) {
+        errors.error = "URL Expired. Please try resetting your password again.";
+        return;
+      }
+      bcrypt.compare(tokenid, doc._id, async (err, result) => {
+        if (err || !result) {
+          errors.error = "Invalid URL";
+          return;
+        }
+        console.log(doc.created);
+        user = await User.findById(doc.userId);
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(password, salt, (err, hash) => {
+            if (err) throw err;
+            user.password = hash;
+            user.save();
+          });
+        });
+      });
+    } else {
+      errors.error = "Invalid URL";
+      return;
+    }
+  });
+  token.used = true;
+  token.save();
+  return isEmpty(errors) && !errors.error
+    ? res.sendStatus(200)
+    : res.status(400).json(errors);
 });
 
 module.exports = router;
