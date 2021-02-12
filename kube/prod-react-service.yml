@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bring-recycling-react
+  namespace: prod-bring-recycling
+spec:
+  selector:
+    app: react
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

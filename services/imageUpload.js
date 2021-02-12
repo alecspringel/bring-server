@@ -5,6 +5,7 @@ const sharp = require("sharp");
 const { validateNewDonation } = require("../validation/donations");
 const { v4: uuidv4 } = require("uuid");
 
+
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,

@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 var cors = require("cors");
+var morgan = require('morgan')
 // Endpoints
 const user = require("./api/user");
 const donations = require("./api/donations");
@@ -10,9 +11,10 @@ const responses = require("./api/responses");
 const { loginLimiter, donationLimiter } = require("./rateLimits");
 // MongoDB Drivers/URI
 const mongoose = require("mongoose");
+
+
 // Config
 const PORT = 5000;
-
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -23,6 +25,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(cors());
+app.use(morgan('combined'))
 // Bodyparser middleware
 app.use(
   bodyParser.urlencoded({
