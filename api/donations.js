@@ -108,6 +108,9 @@ router.post("/respond", authUser, (req, res) => {
         `This is BRING Recyling responding to your question about donating ${donation.itemName}.\n\n`;
       greeting = greeting.concat(responseMessage);
       greeting = greeting.concat(
+        `\n\nYour confirmation number is: ${donationId}`
+      );
+      greeting = greeting.concat(
         "\n\nThank you for your inquiry,\n BRING Recycling"
       );
       if (donation.preferEmail) {
