@@ -10,7 +10,7 @@ function validateLoginInput(data) {
 
   // email checks
   if (validator.isEmpty(data.email)) {
-    errors.email = "email field is required";
+    errors.email = "Email field is required";
   }
   // Password checks
   if (validator.isEmpty(data.password)) {
@@ -82,4 +82,22 @@ function validateFinish(data) {
   };
 }
 
-module.exports = { validateInvite, validateLoginInput, validateFinish };
+function validatePassword(password) {
+  let errors = {};
+  password = !isEmpty(password) ? password : "";
+  if (!/^(?=.*\d).{6,20}$/.test(password)) {
+    errors.error =
+      "Password must be between 6-20 characters and include a number";
+  }
+  return {
+    errors,
+    isValid: isEmpty(errors),
+  };
+}
+
+module.exports = {
+  validateInvite,
+  validateLoginInput,
+  validateFinish,
+  validatePassword,
+};
