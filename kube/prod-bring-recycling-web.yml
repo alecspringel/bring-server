@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: web-server
-          image: mvpstudio/bring-server:NodeJan18
+          image: mvpstudio/bring-server:NodeJan22v2
           resources:
             limits:
               cpu: 0.25
@@ -61,6 +61,11 @@ spec:
                 secretKeyRef:
                   name: secret-opaque
                   key: TWILIO_AUTH_TOKEN
+            - name: TWILIO_PHONE_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-opaque
+                  key: TWILIO_PHONE_NUMBER
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
