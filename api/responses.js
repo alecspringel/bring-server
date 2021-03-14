@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { authUser } = require("../middleware/authUser")
+const { authUser } = require("../middleware/authUser");
 const Response = require("../mongo/models/Responses");
 
 // @route POST api/responses/create
@@ -8,7 +8,9 @@ const Response = require("../mongo/models/Responses");
 // @access Private
 router.post("/create", authUser, (req, res) => {
   const newResponse = {
-    message: req.body.message
+    category: req.body.category,
+    title: req.body.title,
+    message: req.body.message,
   };
   Response.create(newResponse);
   res.status(200).send(newResponse);
@@ -28,7 +30,7 @@ router.post("/delete", authUser, (req, res) => {
 // @route GET api/responses/all
 // @desc Get all responses
 // @access Private
-router.get("/all", authUser, (req, res) => {
+router.get("/", authUser, (req, res) => {
   Response.find().then((docs) => {
     res.status(200).send(docs);
   });
