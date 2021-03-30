@@ -209,6 +209,7 @@ router.get("/resolved", authUser, async (req, res) => {
   }
   const count = await Donation.count(query);
   Donation.find(query)
+    .sort({ createdDate: -1 })
     .skip(parseInt(req.query.skip))
     .limit(parseInt(req.query.limit))
     .then((docs) => {
