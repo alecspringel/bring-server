@@ -8,7 +8,7 @@ const {
   sendEmail,
   sendStaffEmailNotification,
 } = require("../services/nodeMailer");
-const sendSlackNotification = require("../services/slackNotifications");
+// const sendSlackNotification = require("../services/slackNotifications");
 // Image upload
 const upload = require("../services/imageUpload");
 const MAX_IMAGES = 5;
@@ -73,7 +73,7 @@ router.post("/create", (req, res) => {
           process.env.CLIENT_URL + "/admin",
           message
         );
-        sendSlackNotification(message);
+        // sendSlackNotification(message);
       });
       res.status(200).send(newDonation);
     }
@@ -84,6 +84,7 @@ router.post("/create", (req, res) => {
 // @desc Used when staff members respond to posted donations
 // @access Private
 router.post("/respond", authUser, (req, res) => {
+  sendEmail("emailSubject", "greeting", null, "alecspringel@gmail.com");
   const { donationId, responseMessage, responseType } = req.body;
   const staffResponder = {
     id: req.user._id,
@@ -114,6 +115,7 @@ router.post("/respond", authUser, (req, res) => {
         "\n\nThank you for your inquiry!\n BRING Team"
       );
       if (donation.preferEmail) {
+        console.log(greeting);
         const emailSubject = "BRING Recycling Donation";
         sendEmail(emailSubject, greeting, null, donation.email);
       }
