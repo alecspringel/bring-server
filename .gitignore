@@ -3,3 +3,4 @@ node_modules
 proj-workspace.code.-workspace
 bring_env.sh
 .env
+prod-bring-secrets.yml
