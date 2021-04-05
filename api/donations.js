@@ -27,11 +27,11 @@ router.post("/create", (req, res) => {
   //   req.body.errors = errors;
   //   return res.status(400).send(req.body.errors);
   // }
-  var start = (new Date());
-  console.log('Starting imageupload', start);
+  var start = new Date();
+  console.log("Starting imageupload", start);
   imageUpload(req, res, (err) => {
-    var t1 = (new Date());
-    console.log('Finished imageupload', t1-start);
+    var t1 = new Date();
+    console.log("Finished imageupload", t1 - start);
     if (err) {
       return res.status(400).send(req.body.errors);
     } else {
@@ -40,7 +40,7 @@ router.post("/create", (req, res) => {
       }
       // req.files contains all image info in array [images]
       console.log(req.files);
-      var imageUrls = req.files.map((file) => file.transforms[0].location);
+      var imageUrls = req.files.map((file) => file.location);
       const newDonation = {
         first: req.body.first.charAt(0).toUpperCase() + req.body.first.slice(1),
         last: req.body.last.charAt(0).toUpperCase() + req.body.last.slice(1),
@@ -53,11 +53,11 @@ router.post("/create", (req, res) => {
         imageUrls,
       };
       Donation.create(newDonation);
-      var t2 = (new Date());
-      console.log('Finished donation creation', t2-start);
+      var t2 = new Date();
+      console.log("Finished donation creation", t2 - start);
       Donation.countDocuments({ responseStatus: false }).then((pending) => {
-        var t3 = (new Date());
-        console.log('Finished counting donations', t3-start);
+        var t3 = new Date();
+        console.log("Finished counting donations", t3 - start);
         console.log(
           "New donation question created",
           pending,
@@ -81,15 +81,15 @@ router.post("/create", (req, res) => {
           process.env.CLIENT_URL + "/admin",
           message
         );
-        var t4 = (new Date());
-        console.log('Sent email', t4-start);
+        var t4 = new Date();
+        console.log("Sent email", t4 - start);
         // sendSlackNotification(message);
       });
       res.status(200).send(newDonation);
     }
   });
-  var t5 = (new Date());
-  console.log('Finished everything', t5-start);
+  var t5 = new Date();
+  console.log("Finished everything", t5 - start);
 });
 
 // @route POST api/donations/respond"

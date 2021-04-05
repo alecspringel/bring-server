@@ -5,7 +5,7 @@ const sharp = require("sharp");
 const { validateNewDonation } = require("../validation/donations");
 const { v4: uuidv4 } = require("uuid");
 
-const limits = { fileSize: 1024 * 1024 * 20 }
+const limits = { fileSize: 1024 * 1024 * 20 };
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -51,7 +51,6 @@ const upload = multer({
     shouldTransform: function (req, file, cb) {
       cb(null, false);
     },
-
     // transforms: [
     //   {
     //     id: "original",
@@ -60,10 +59,7 @@ const upload = multer({
     //     },
     //     transform: function (req, file, cb) {
     //       //Perform desired transformations
-    //       cb(
-    //         null,
-    //         sharp().jpeg()
-    //       );
+    //       cb(null, sharp().jpeg());
     //     },
     //   },
     // ],
