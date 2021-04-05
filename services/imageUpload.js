@@ -5,6 +5,7 @@ const sharp = require("sharp");
 const { validateNewDonation } = require("../validation/donations");
 const { v4: uuidv4 } = require("uuid");
 
+const limits = { fileSize: 1024 * 1024 * 20 };
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -41,29 +42,27 @@ function makeid(length) {
 }
 
 const upload = multer({
+  limits: limits,
   fileFilter,
   storage: multerS3({
     acl: "public-read",
     s3,
     bucket: process.env.AWS_S3_BUCKET_NAME,
     shouldTransform: function (req, file, cb) {
-      cb(null, true);
+      cb(null, false);
     },
-    transforms: [
-      {
-        id: "original",
-        key: function (req, file, cb) {
-          cb(null, uuidv4());
-        },
-        transform: function (req, file, cb) {
-          //Perform desired transformations
-          cb(
-            null,
-            sharp().resize({ width: 900, fit: sharp.fit.contain }).jpeg()
-          );
-        },
-      },
-    ],
+    // transforms: [
+    //   {
+    //     id: "original",
+    //     key: function (req, file, cb) {
+    //       cb(null, uuidv4());
+    //     },
+    //     transform: function (req, file, cb) {
+    //       //Perform desired transformations
+    //       cb(null, sharp().jpeg());
+    //     },
+    //   },
+    // ],
     contentType: multerS3.AUTO_CONTENT_TYPE,
     metadata: function (req, file, cb) {
       cb(null, { fieldName: "TESTING_METADATA" });
