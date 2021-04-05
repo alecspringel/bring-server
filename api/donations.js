@@ -27,7 +27,11 @@ router.post("/create", (req, res) => {
   //   req.body.errors = errors;
   //   return res.status(400).send(req.body.errors);
   // }
+  var start = (new Date());
+  console.log('Starting imageupload', start);
   imageUpload(req, res, (err) => {
+    var t1 = (new Date());
+    console.log('Finished imageupload', t1-start);
     if (err) {
       return res.status(400).send(req.body.errors);
     } else {
@@ -49,7 +53,11 @@ router.post("/create", (req, res) => {
         imageUrls,
       };
       Donation.create(newDonation);
+      var t2 = (new Date());
+      console.log('Finished donation creation', t2-start);
       Donation.countDocuments({ responseStatus: false }).then((pending) => {
+        var t3 = (new Date());
+        console.log('Finished counting donations', t3-start);
         console.log(
           "New donation question created",
           pending,
@@ -73,11 +81,15 @@ router.post("/create", (req, res) => {
           process.env.CLIENT_URL + "/admin",
           message
         );
+        var t4 = (new Date());
+        console.log('Sent email', t4-start);
         // sendSlackNotification(message);
       });
       res.status(200).send(newDonation);
     }
   });
+  var t5 = (new Date());
+  console.log('Finished everything', t5-start);
 });
 
 // @route POST api/donations/respond"
