@@ -8,6 +8,7 @@ var morgan = require('morgan')
 const user = require("./api/user");
 const donations = require("./api/donations");
 const responses = require("./api/responses");
+const healthcheck = require("./api/healthcheck");
 const { loginLimiter, donationLimiter } = require("./rateLimits");
 // MongoDB Drivers/URI
 const mongoose = require("mongoose");
@@ -40,6 +41,7 @@ app.use("/api/user/login", loginLimiter);
 app.use("/api/user", user);
 app.use("/api/donations", donations);
 app.use("/api/responses", responses);
+app.use("/api/healthcheck", healthcheck);
 
 app.listen(PORT, () => {
   console.log(`Bring server running at http://localhost:${PORT}`);
